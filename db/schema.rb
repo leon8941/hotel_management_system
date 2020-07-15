@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 2020_07_14_160632) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "hotel_packages", force: :cascade do |t|
     t.string "hotel_name"
     t.decimal "price"
