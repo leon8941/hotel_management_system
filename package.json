@@ -1,5 +1,14 @@
 {
-  "dependencies": {
-    "@material-ui/icons": "^4.9.1"
-  }
+  "name": "hotel_management_system",
+  "license": "MIT",
+  "engines": {
+    "node": "13.12.0",
+    "yarn": "1.15.2"
+  },
+  "scripts": {
+    "build": "yarn --cwd client install && yarn --cwd client build",
+    "deploy": "cp -a client/build/. public/",
+    "heroku-postbuild": "yarn build && yarn deploy"
+  },
+  "version": "0.0.0"
 }
