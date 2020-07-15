@@ -1,13 +1,13 @@
 class HotelPackagesController < ApiController
-  # GET /hotel_packages
   def index
-    @hotel_packages = HotelPackage.all
+    @hotel_packages = HotelPackage.all.map(&:addtional_data)
+
     render json: @hotel_packages.to_json
   end
 
-  # GET /hotel_packages/:id
   def show
-    @hotel_package = HotelPackage.find(hotel_package_params[:id])
+    @hotel_package = HotelPackage.find(params[:id]).addtional_data()
+    
     render json: @hotel_package.to_json
   end
 
