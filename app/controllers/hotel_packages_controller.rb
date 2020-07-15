@@ -38,6 +38,6 @@ class HotelPackagesController < ApiController
   private
 
   def hotel_package_params
-    params.require(:hotel_package).permit(:id, :hotel_name, :price, :duration_day, :duration_night, :validity_duration, :description)
+    params.require(:hotel_package).permit(:id, :hotel_name, :price, :duration_day, :duration_night, :validity_duration, :description, :created_at)
   end
 end

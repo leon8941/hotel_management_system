@@ -159,7 +159,7 @@ class App extends Component {
   render() {
     let { hotelPackages } = this.state
 
-    return hotelPackages && hotelPackages.length > 0 ?
+    const mainUI = hotelPackages && hotelPackages.length > 0 ?
       <React.Fragment>
         Welcome to My Hotel System!
         <Grid container spacing={5} style={{padding: 12}}>
@@ -193,23 +193,27 @@ class App extends Component {
         <React.Fragment>
           Loading ...
         </React.Fragment>
-        <React.Fragment>
-          <Fab color="primary" aria-label="add" onClick={() => this.addHotelPackage()}>
-            <AddIcon />
-          </Fab>
-        </React.Fragment>
-        <React.Fragment>
-          <ActionModal 
-            open={this.state.open} 
-            closed={this.closeModalHandler}
-            actionType={this.state.actionType}
-            hotelPackage={this.state.input.hotelPackage}
-            inputOnChange={(event) => this.inputOnChangeHandler(event)}
-            onSubmitButtonClick={() => {this.onSubmitButtonClickHandler()}}
-          />
-        </React.Fragment>
       </div>
     
+    const generalComponents = <div>
+              <React.Fragment>
+                <Fab color="primary" aria-label="add" onClick={() => this.addHotelPackage()}>
+                  <AddIcon />
+                </Fab>
+              </React.Fragment>
+              <React.Fragment>
+                <ActionModal 
+                  open={this.state.open} 
+                  closed={this.closeModalHandler}
+                  actionType={this.state.actionType}
+                  hotelPackage={this.state.input.hotelPackage}
+                  inputOnChange={(event) => this.inputOnChangeHandler(event)}
+                  onSubmitButtonClick={() => {this.onSubmitButtonClickHandler()}}
+                />
+              </React.Fragment>
+            </div>
+            
+    return <div>{mainUI}{generalComponents}</div>
   }
 }
 
