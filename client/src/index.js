@@ -12,24 +12,37 @@ import { get, post, put, destroy } from './api/api'
 import * as serviceWorker from './serviceWorker'
 
 import HotelPackage from './components/hotelPackage'
-import TransitionsModal from './components/modal/hotelPackageModal'
+import ActionModal from './components/modal/actionModal'
 
 class App extends Component {
   constructor () {
     super()
     this.state = {
       hotelPackages: null,
-      actionModal: false,
+      open: false,
       actionType: null,
+      input: {
+        hotelPackage: {
+          id: null,
+          hotel_name: null,
+          description: null,
+          duration_day: 0,
+          duration_night: 0,
+          price: 0,
+          validity_duration: 0
+        }
+      }
     }
 
     this.getHotelPackages = this.getHotelPackages.bind(this)
     this.getHotelPackageById = this.getHotelPackageById.bind(this)
+    this.inputOnChangeHandler = this.inputOnChangeHandler.bind(this)
+    this.onSubmitButtonClickHandler = this.onSubmitButtonClickHandler.bind(this)
+    this.editHandler = this.editHandler.bind(this)
   }
 
   componentDidMount = () =>{
     this.getHotelPackages()
-    // this.getHotelPackageById("5")
   }
 
   getHotelPackages = () => {
@@ -45,26 +58,102 @@ class App extends Component {
   }
 
   createHotelPackage = (data) => {
-    post(`/api/hotel_packages`, data)
+    post(`/api/hotel_packages`, data).then(() => {
+      this.getHotelPackages()
+    })
   }
 
   updateHotelPackage = (data, id) => {
-    put(`/api/hotel_packages/${id}`, data)
+    put(`/api/hotel_packages/${id}`, data).then(() => {
+      this.getHotelPackages()
+    })
+  }
+
+  deleteHotelPackage = (id) => {
+    destroy(`/api/hotel_packages/${id}`).then(() => {
+      this.getHotelPackages()
+    })
   }
 
   //Button's Actions
-  addHotelPackage = (event) => {
+  addHotelPackage = () => {
     this.setState({
-      actionModal: true,
-      actionType: "add"
+      open: true,
+      actionType: "Add"
     })
   }
 
   closeModalHandler = () => {
     this.setState({
-      actionModal: false,
-      actionType: null
+      open: false,
+      actionType: null,
+      input: {
+        hotelPackage: {
+          id: null,
+          hotel_name: null,
+          description: null,
+          duration_day: 0,
+          duration_night: 0,
+          price: 0,
+          validity_duration: 0
+        }
+      }
     })
+  }
+
+  inputOnChangeHandler = (event) => {
+    let value = event.target.value
+    let id = event.target.id
+
+    this.setState(prevState => ({
+      ...prevState,
+        input: {
+          ...prevState.input,
+            hotelPackage: {
+              ...prevState.input.hotelPackage,
+              [id]: value
+            }
+        }
+    }))
+  }
+
+  onSubmitButtonClickHandler = () => {
+    let values = {...this.state.input.hotelPackage}
+    let actionType = this.state.actionType
+    
+    if (actionType === "Add") {
+      this.createHotelPackage(values)
+    }
+    else if (actionType === "Update") {
+       this.updateHotelPackage(values, this.state.input.hotelPackage.id)
+    }
+    
+    this.setState({
+      open: false
+    })
+  }
+
+  deleteHandler = (id) => {
+    let response = window.confirm("Are you sure you want to delete it?")
+    if (response) {
+      this.deleteHotelPackage(id)
+    }
+  }
+
+  editHandler = (id) => {
+    let hotelPackage = this.state.hotelPackages.find((hotel) => hotel.id == id)
+
+    this.setState(prevState => ({
+      ...prevState,
+        open: true,
+        actionType: "Update",
+        input: {
+          ...prevState.input,
+            hotelPackage: {
+              ...hotelPackage
+            }
+        }
+    }))
   }
 
   render() {
@@ -81,13 +170,15 @@ class App extends Component {
               return <Grid key={hotelPackage.id} item xs={12} sm={6} lg={4} xl={3}>
                 <HotelPackage 
                   key={hotelPackage.id}
-                  hotelName={hotelPackage.hotel_name}
+                  hotel_name={hotelPackage.hotel_name}
                   description={hotelPackage.description}
-                  durationDay={hotelPackage.duration_day}
-                  durationNight={hotelPackage.duration_night}
+                  duration_day={hotelPackage.duration_day}
+                  duration_night={hotelPackage.duration_night}
                   price={hotelPackage.price}
-                  validityDuration={hotelPackage.validity_duration}
-                  validUntil={validUntilDateTime.toLocaleDateString()}
+                  validity_duration={hotelPackage.validity_duration}
+                  valid_until={validUntilDateTime.toLocaleDateString()}
+                  delete={() => this.deleteHandler(hotelPackage.id)}
+                  edit={() => this.editHandler(hotelPackage.id)}
                 >
                 </HotelPackage>
               </Grid>
@@ -100,7 +191,14 @@ class App extends Component {
             <AddIcon />
           </Fab>
         </React.Fragment>
-        <TransitionsModal open={this.state.actionModal} closed={this.closeModalHandler}/>
+        <ActionModal 
+          open={this.state.open} 
+          closed={this.closeModalHandler}
+          actionType={this.state.actionType}
+          hotelPackage={this.state.input.hotelPackage}
+          inputOnChange={(event) => this.inputOnChangeHandler(event)}
+          onSubmitButtonClick={() => {this.onSubmitButtonClickHandler()}}
+          />
       </React.Fragment>
       :
       <React.Fragment>
