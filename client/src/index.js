@@ -186,24 +186,29 @@ class App extends Component {
           }
         </Grid>
         <CssBaseline />
+        
+      </React.Fragment>
+      :
+      <div>
+        <React.Fragment>
+          Loading ...
+        </React.Fragment>
         <React.Fragment>
           <Fab color="primary" aria-label="add" onClick={() => this.addHotelPackage()}>
             <AddIcon />
           </Fab>
         </React.Fragment>
-        <ActionModal 
-          open={this.state.open} 
-          closed={this.closeModalHandler}
-          actionType={this.state.actionType}
-          hotelPackage={this.state.input.hotelPackage}
-          inputOnChange={(event) => this.inputOnChangeHandler(event)}
-          onSubmitButtonClick={() => {this.onSubmitButtonClickHandler()}}
+        <React.Fragment>
+          <ActionModal 
+            open={this.state.open} 
+            closed={this.closeModalHandler}
+            actionType={this.state.actionType}
+            hotelPackage={this.state.input.hotelPackage}
+            inputOnChange={(event) => this.inputOnChangeHandler(event)}
+            onSubmitButtonClick={() => {this.onSubmitButtonClickHandler()}}
           />
-      </React.Fragment>
-      :
-      <React.Fragment>
-        Loading ...
-      </React.Fragment>
+        </React.Fragment>
+      </div>
     
   }
 }
