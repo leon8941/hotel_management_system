@@ -2,18 +2,27 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 
+import { CssBaseline } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
+import Fab from '@material-ui/core/Fab'
+import AddIcon from '@material-ui/icons/Add'
 
 import { get, post, put, destroy } from './api/api'
 
 import * as serviceWorker from './serviceWorker'
 
 import HotelPackage from './components/hotelPackage'
+import TransitionsModal from './components/modal/hotelPackageModal'
 
 class App extends Component {
   constructor () {
     super()
-    this.state = {}
+    this.state = {
+      hotelPackages: null,
+      actionModal: false,
+      actionType: null,
+    }
+
     this.getHotelPackages = this.getHotelPackages.bind(this)
     this.getHotelPackageById = this.getHotelPackageById.bind(this)
   }
@@ -43,11 +52,26 @@ class App extends Component {
     put(`/api/hotel_packages/${id}`, data)
   }
 
+  //Button's Actions
+  addHotelPackage = (event) => {
+    this.setState({
+      actionModal: true,
+      actionType: "add"
+    })
+  }
+
+  closeModalHandler = () => {
+    this.setState({
+      actionModal: false,
+      actionType: null
+    })
+  }
+
   render() {
     let { hotelPackages } = this.state
 
     return hotelPackages && hotelPackages.length > 0 ?
-      <div>
+      <React.Fragment>
         Welcome to My Hotel System!
         <Grid container spacing={5} style={{padding: 12}}>
           { 
@@ -70,11 +94,18 @@ class App extends Component {
             })
           }
         </Grid>
-      </div>
+        <CssBaseline />
+        <React.Fragment>
+          <Fab color="primary" aria-label="add" onClick={() => this.addHotelPackage()}>
+            <AddIcon />
+          </Fab>
+        </React.Fragment>
+        <TransitionsModal open={this.state.actionModal} closed={this.closeModalHandler}/>
+      </React.Fragment>
       :
-      <div>
+      <React.Fragment>
         Loading ...
-      </div>
+      </React.Fragment>
     
   }
 }
